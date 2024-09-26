@@ -1,0 +1,23 @@
+[package]
+name = "gpt_sovits_plugin"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+wasmedge_plugin_sdk = { version = "0.3", git = "https://github.com/second-state/wasmedge_plugin_rust_sdk" }
+anyhow = "1.0.87"
+tokenizers = { version = "0.20.0", features = ["http"] }
+tch = { version = "0.17.0" }
+pinyin = "0.10.0"
+wav_io = "0.1.14"
+serde_json = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+
+[features]
+standalone = ["wasmedge_plugin_sdk/standalone"]
+
+[workspace]
+members = ["gpt_sovits_wasm"]
