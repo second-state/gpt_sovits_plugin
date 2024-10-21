@@ -22,7 +22,7 @@ fn infer<'a>(
                 let text_len = *text_len as usize;
                 if let Some(text) = mem.get_slice(WasmPtr::<u8>::from(text_ptr), text_len) {
                     if let Ok(text) = std::str::from_utf8(text) {
-                        match tch::no_grad(|| runtime.infer(text)) {
+                        match runtime.infer(text) {
                             Ok(wav) => {
                                 let len = wav.len();
                                 runtime.output_wav = wav;
