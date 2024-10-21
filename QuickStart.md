@@ -1,4 +1,4 @@
-Step 1: Install Torch 2.4
+Step 1: Install Torch 2.4.0
 
 Step 2: Build plugin & Wasm
 
