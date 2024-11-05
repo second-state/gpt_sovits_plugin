@@ -25,5 +25,5 @@ Step 4: Run
 ```bash
 # run
 export GPT_SOVITS_CONFIG_PATH='./config.json' 
-wasmedge --dir=".:." target/wasm32-wasi/debug/gpt_sovits_wasm.wasm '这是一段语音示例'
+wasmedge --dir=".:." target/wasm32-wasi/release/gpt_sovits_wasm.wasm '这是一段语音示例'
 ```

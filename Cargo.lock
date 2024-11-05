@@ -825,9 +825,9 @@ dependencies = [
 
 [[package]]
 name = "gpt_sovits_rs"
-version = "0.0.2"
+version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1d7d00d6f3088db70090a1a996abdcc22e983e1c70f538f8914c614e169ec00b"
+checksum = "642132930352136e68024ae0d02ddf6d89a39060bb703247f680ca23404b9f91"
 dependencies = [
  "anyhow",
  "arpabet",

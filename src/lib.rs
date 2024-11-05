@@ -15,14 +15,26 @@ fn infer<'a>(
     data: &'a mut HostData,
     args: Vec<WasmVal>,
 ) -> Result<Vec<WasmVal>, CoreError> {
-    if let Some([WasmVal::I32(text_ptr), WasmVal::I32(text_len)]) = args.get(0..2) {
+    if let Some(
+        [WasmVal::I32(speaker_ptr), WasmVal::I32(speaker_len), WasmVal::I32(text_ptr), WasmVal::I32(text_len)],
+    ) = args.get(0..4)
+    {
         match &mut data.0 {
             Ok(runtime) => {
+                let speaker_ptr = *speaker_ptr as usize;
+                let speaker_len = *speaker_len as usize;
+
                 let text_ptr = *text_ptr as usize;
                 let text_len = *text_len as usize;
-                if let Some(text) = mem.get_slice(WasmPtr::<u8>::from(text_ptr), text_len) {
-                    if let Ok(text) = std::str::from_utf8(text) {
-                        match runtime.infer(text) {
+
+                if let (Some(speaker), Some(text)) = (
+                    mem.get_slice(WasmPtr::<u8>::from(speaker_ptr), speaker_len),
+                    mem.get_slice(WasmPtr::<u8>::from(text_ptr), text_len),
+                ) {
+                    if let (Ok(speaker), Ok(text)) =
+                        (std::str::from_utf8(speaker), std::str::from_utf8(text))
+                    {
+                        match runtime.infer(speaker, text) {
                             Ok(wav) => {
                                 let len = wav.len();
                                 runtime.output_wav = wav;
@@ -92,7 +104,10 @@ pub fn create_module() -> PluginModule<HostData> {
     module
         .add_func(
             "infer",
-            (vec![ValType::I32, ValType::I32], vec![ValType::I32]),
+            (
+                vec![ValType::I32, ValType::I32, ValType::I32, ValType::I32],
+                vec![ValType::I32],
+            ),
             infer,
         )
         .unwrap();

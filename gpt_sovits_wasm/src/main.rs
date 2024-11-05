@@ -2,14 +2,19 @@ mod gpt_sovits {
     mod ffi {
         #[link(wasm_import_module = "gpt_sovits")]
         extern "C" {
-            pub fn infer(text_ptr: *const u8, text_len: usize) -> i32;
+            pub fn infer(
+                speaker_ptr: *const u8,
+                speaker_len: usize,
+                text_ptr: *const u8,
+                text_len: usize,
+            ) -> i32;
             pub fn get_output(output_buf: *mut u8, output_len: usize) -> i32;
         }
     }
 
-    pub fn infer(text: &str) -> Result<Vec<u8>, &'static str> {
+    pub fn infer(speaker: &str, text: &str) -> Result<Vec<u8>, &'static str> {
         unsafe {
-            let i = ffi::infer(text.as_ptr(), text.len());
+            let i = ffi::infer(speaker.as_ptr(), speaker.len(), text.as_ptr(), text.len());
             match i {
                 -1 => Err("infer error"),
                 -2 => Err("runtime error"),
@@ -28,7 +33,7 @@ mod gpt_sovits {
 fn main() {
     let text = std::env::args().nth(1).unwrap();
     println!("infer {text} -> out.wav");
-    match gpt_sovits::infer(&text) {
+    match gpt_sovits::infer("speaker1", &text) {
         Ok(buf) => {
             std::fs::write("out.wav", buf).unwrap();
             println!("done");

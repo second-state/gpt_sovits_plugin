@@ -1,9 +1,13 @@
 {
     "bert_model_path": "resource/bert_model.pt",
     "ssl_model_path": "resource/ssl_model.pt",
-    "gpt_sovits_path": "resource/gpt_sovits_model.pt",
     "tokenizer_path": "resource/tokenizer.json",
-    "symbols_path": "resource/symbols_v2.json",
-    "ref_audio_path": "resource/chen1_ref.wav",
-    "ref_text": "声音,是有温度的.夜晚的声音,会发光."
+    "speaker": [
+        {
+            "name": "speaker1",
+            "gpt_sovits_path": "resource/gpt_sovits_model.pt",
+            "ref_audio_path": "resource/chen1_ref.wav",
+            "ref_text": "声音,是有温度的.夜晚的声音,会发光."
+        }
+    ]
 }
