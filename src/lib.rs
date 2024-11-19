@@ -41,18 +41,22 @@ fn infer<'a>(
                                 Ok(vec![WasmVal::I32(len as i32)])
                             }
                             Err(e) => {
-                                eprintln!("infer error: {:?}", e);
+                                log::error!("infer error: {:?}", e);
                                 Ok(vec![WasmVal::I32(-1)])
                             }
                         }
                     } else {
+                        log::error!("infer error: invalid utf8");
                         Ok(vec![WasmVal::I32(-1)])
                     }
                 } else {
                     Err(CoreError::Execution(CoreExecutionError::MemoryOutOfBounds))
                 }
             }
-            Err(_) => Ok(vec![WasmVal::I32(-2)]),
+            Err(e) => {
+                log::error!("infer error: {:?}", e);
+                Ok(vec![WasmVal::I32(-2)])
+            }
         }
     } else {
         Err(CoreError::Execution(CoreExecutionError::FuncTypeMismatch))
@@ -97,6 +101,7 @@ fn is_ok<'a>(
 }
 
 pub fn create_module() -> PluginModule<HostData> {
+    env_logger::init();
     let runtime = tts::GPTSovitsRuntime::new_by_env();
 
     let mut module = PluginModule::create("gpt_sovits", HostData(runtime)).unwrap();
@@ -128,7 +133,7 @@ pub fn create_module() -> PluginModule<HostData> {
 wasmedge_plugin_sdk::plugin::register_plugin!(
     plugin_name="gpt_sovits",
     plugin_description="a tts plugin based on gpt-sovits",
-    version=(0,0,0,1),
+    version=(0,0,0,2),
     modules=[
         {"gpt_sovits","a tts plugin based on gpt-sovits",create_module}
     ]

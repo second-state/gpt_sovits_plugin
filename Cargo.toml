@@ -1,6 +1,6 @@
 [package]
 name = "gpt_sovits_plugin"
-version = "0.1.0"
+version = "0.0.2"
 edition = "2021"
 
 [lib]
@@ -13,6 +13,8 @@ wav_io = "0.1.14"
 serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
 gpt_sovits_rs = { version = "0.2.0" }
+log = "0.4"
+env_logger = "0.11"
 
 [features]
 standalone = ["wasmedge_plugin_sdk/standalone"]
