@@ -4,6 +4,8 @@ pub struct Config {
     pub bert_model_path: Option<String>,
     #[serde(default)]
     pub tokenizer_path: Option<String>,
+    #[serde(default)]
+    pub g2pw_model_path: Option<String>,
 
     pub ssl_model_path: String,
 
@@ -38,12 +40,13 @@ impl GPTSovitsRuntime {
             gpt_sovits_rs::GPTSovitsConfig::new(config.ssl_model_path.clone());
 
         match (
+            config.g2pw_model_path.clone(),
             config.bert_model_path.clone(),
             config.tokenizer_path.clone(),
         ) {
-            (Some(cn_bert_path), Some(tokenizer_path)) => {
+            (Some(g2pw_model_path), Some(cn_bert_path), Some(tokenizer_path)) => {
                 gpt_sovits_config =
-                    gpt_sovits_config.with_cn_bert_path(cn_bert_path, tokenizer_path);
+                    gpt_sovits_config.with_chinese(g2pw_model_path, cn_bert_path, tokenizer_path);
             }
             _ => {}
         }

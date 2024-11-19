@@ -1,5 +1,6 @@
 {
     "bert_model_path": "resource/bert_model.pt",
+    "g2pw_model_path": "resource/g2pw_model.pt",
     "ssl_model_path": "resource/ssl_model.pt",
     "tokenizer_path": "resource/tokenizer.json",
     "speaker": [
