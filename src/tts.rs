@@ -71,7 +71,7 @@ impl GPTSovitsRuntime {
     }
 
     pub fn infer(&self, speaker: &str, text: &str) -> anyhow::Result<Vec<u8>> {
-        let audio = self.gpt_sovits.infer(speaker, text)?;
+        let audio = self.gpt_sovits.segment_infer(speaker, text, 50)?;
 
         let audio_size = audio.size1()? as usize;
         let mut samples = vec![0f32; audio_size];
