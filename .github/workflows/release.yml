@@ -1,0 +1,165 @@
+name: release
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_name:
+        description: "release page name"
+        required: true
+  push:
+    tags:
+      - "[0-9]+.[0-9]+.[0-9]+*"
+
+jobs:
+  build_ubuntu_2004_cuda12:
+    name: Build Ubuntu 20.04 cuda12
+    runs-on: ubuntu-latest
+    container: wasmedge/wasmedge:ubuntu-20.04-build-gcc-cuda12
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Install Rust-stable
+      uses: dtolnay/rust-toolchain@stable
+    
+    - name: Install WasmEdge
+      run: |
+        curl -sSf https://raw.githubusercontent.com/WasmEdge/WasmEdge/master/utils/install_v2.sh | bash -s -- --version=0.14.1
+    
+    - name: Install Torch
+      run: |
+        wget https://download.pytorch.org/libtorch/cu124/libtorch-cxx11-abi-shared-with-deps-2.4.0%2Bcu124.zip
+        unzip libtorch-cxx11-abi-shared-with-deps-2.4.0+cu124.zip
+    
+    - name: Install gh
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        type -p curl >/dev/null || (apt update && apt install curl -y)
+        curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
+        && chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
+        && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+        && apt update \
+        && apt install gh -y
+
+    - name: Grant the safe directory for git
+      run: |
+        git config --global --add safe.directory $(pwd)
+
+    - name: Build
+      run: |
+        export LIBTORCH=$(pwd)/libtorch
+        cargo build --release
+        mv ./target/release/libgpt_sovits_plugin.so ./libgpt_sovits_plugin.ubuntu-2004.cuda12.so
+
+    - name: Create release page
+      uses: softprops/action-gh-release@v2
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        files: |
+          ./libgpt_sovits_plugin.ubuntu-2004.cuda12.so
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Upload to release page
+      if: ${{ github.event_name == 'workflow_dispatch' }}
+      run: |
+        gh release upload ${{ github.event.inputs.release_name }} ./libgpt_sovits_plugin.ubuntu-2004.cuda12.so --clobber
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build_ubuntu_latest_cpu:
+    name: Build Ubuntu Latest CPU
+    runs-on: ubuntu-latest
+    container: wasmedge/wasmedge:ubuntu-20.04-build-gcc-cuda12
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Install Rust-stable
+      uses: dtolnay/rust-toolchain@stable
+    
+    - name: Install WasmEdge
+      run: |
+        curl -sSf https://raw.githubusercontent.com/WasmEdge/WasmEdge/master/utils/install_v2.sh | bash -s -- --version=0.14.1
+    
+    - name: Install Torch
+      run: |
+        wget https://download.pytorch.org/libtorch/cpu/libtorch-cxx11-abi-shared-with-deps-2.4.0%2Bcpu.zip
+        unzip libtorch-cxx11-abi-shared-with-deps-2.4.0+cpu.zip
+
+    - name: Install gh
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        type -p curl >/dev/null || (apt update && apt install curl -y)
+        curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
+        && chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
+        && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+        && apt update \
+        && apt install gh -y
+
+    - name: Grant the safe directory for git
+      run: |
+        git config --global --add safe.directory $(pwd)
+
+    - name: Build
+      run: |
+        export LIBTORCH=$(pwd)/libtorch
+        cargo build --release
+        mv ./target/release/libgpt_sovits_plugin.so ./libgpt_sovits_plugin.ubuntu-2004.cpu.so
+
+    - name: Create release page
+      uses: softprops/action-gh-release@v2
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        files: |
+          ./libgpt_sovits_plugin.ubuntu-2004.cpu.so
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Upload to release page
+      if: ${{ github.event_name == 'workflow_dispatch' }}
+      run: |
+        gh release upload ${{ github.event.inputs.release_name }} ./libgpt_sovits_plugin.ubuntu-2004.cpu.so --clobber
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build_macos_cpu:
+    name : Build for MacOS
+    runs-on: macos-14
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Install Rust-stable
+      uses: dtolnay/rust-toolchain@stable
+    
+    - name: Install WasmEdge
+      run: |
+        curl -sSf https://raw.githubusercontent.com/WasmEdge/WasmEdge/master/utils/install_v2.sh | bash -s -- --version=0.14.1
+        source $HOME/.wasmedge/env
+
+    - name: Install Torch
+      run: |
+        wget https://download.pytorch.org/libtorch/cpu/libtorch-macos-arm64-2.4.0.zip
+        unzip libtorch-macos-arm64-2.4.0.zip
+
+    - name: Build
+      run: |
+        export LIBTORCH=$(pwd)/libtorch
+        cargo build --release
+        mv ./target/release/libgpt_sovits_plugin.dylib ./libgpt_sovits_plugin.macos.cpu.dylib
+
+    - name: Create release page
+      uses: softprops/action-gh-release@v2
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        files: |
+          ./libgpt_sovits_plugin.macos.cpu.dylib
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Upload to release page
+      if: ${{ github.event_name == 'workflow_dispatch' }}
+      run: |
+        gh release upload ${{ github.event.inputs.release_name }} ./libgpt_sovits_plugin.macos.cpu.dylib --clobber
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
