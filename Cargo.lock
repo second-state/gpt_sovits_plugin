@@ -796,9 +796,9 @@ dependencies = [
 
 [[package]]
 name = "gpt_sovits_rs"
-version = "0.2.8"
+version = "0.2.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "97122cd5a65c0c3daf0aa7618f5e12974ad5a505fca709e3f227acce6c5ef416"
+checksum = "b5791479fe700eff839a6f06834e8ff64046f688b22cc67a247d2d3203c22e5d"
 dependencies = [
  "anyhow",
  "env_logger",
