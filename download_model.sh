@@ -40,9 +40,6 @@ fi
 
 echo "If plugin is not installed, please install it manually. Goto https://github.com/second-state/gpt_sovits_plugin"
 
-wget https://raw.githubusercontent.com/second-state/gpt_sovits_rs/refs/heads/main/resource/zh_word_dict.json
-echo '{}' > en_word_dict.json
-
 echo "Generate GPT_Sovits config.json"
 cat > config.json << EOF
 {
