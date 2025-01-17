@@ -133,7 +133,7 @@ pub fn create_module() -> PluginModule<HostData> {
 wasmedge_plugin_sdk::plugin::register_plugin!(
     plugin_name="gpt_sovits",
     plugin_description="a tts plugin based on gpt-sovits",
-    version=(0,0,0,2),
+    version=(0,0,0,3),
     modules=[
         {"gpt_sovits","a tts plugin based on gpt-sovits",create_module}
     ]

@@ -2,12 +2,12 @@
 pub struct Config {
     #[serde(default)]
     pub bert_model_path: Option<String>,
-    #[serde(default)]
-    pub tokenizer_path: Option<String>,
+
     #[serde(default)]
     pub g2pw_model_path: Option<String>,
 
     pub ssl_model_path: String,
+    pub mini_bart_g2p_path: String,
 
     pub speaker: Vec<SpeakerConfig>,
 }
@@ -36,17 +36,17 @@ impl GPTSovitsRuntime {
     pub fn new(config: &Config) -> anyhow::Result<Self> {
         let device = gpt_sovits_rs::Device::cuda_if_available();
 
-        let mut gpt_sovits_config =
-            gpt_sovits_rs::GPTSovitsConfig::new(config.ssl_model_path.clone());
+        let mut gpt_sovits_config = gpt_sovits_rs::GPTSovitsConfig::new(
+            config.ssl_model_path.clone(),
+            config.mini_bart_g2p_path.clone(),
+        );
 
         match (
             config.g2pw_model_path.clone(),
             config.bert_model_path.clone(),
-            config.tokenizer_path.clone(),
         ) {
-            (Some(g2pw_model_path), Some(cn_bert_path), Some(tokenizer_path)) => {
-                gpt_sovits_config =
-                    gpt_sovits_config.with_chinese(g2pw_model_path, cn_bert_path, tokenizer_path);
+            (Some(g2pw_model_path), Some(cn_bert_path)) => {
+                gpt_sovits_config = gpt_sovits_config.with_chinese(g2pw_model_path, cn_bert_path);
             }
             _ => {}
         }
