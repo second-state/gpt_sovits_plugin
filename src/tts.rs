@@ -27,7 +27,8 @@ pub struct GPTSovitsRuntime {
 
 impl GPTSovitsRuntime {
     pub fn new_by_env() -> anyhow::Result<Self> {
-        let config_path = std::env::var("GPT_SOVITS_CONFIG_PATH")?;
+        let config_path =
+            std::env::var("GPT_SOVITS_CONFIG_PATH").unwrap_or("config.json".to_string());
         let config = std::fs::read_to_string(config_path)?;
         let config: Config = serde_json::from_str(&config)?;
         Self::new(&config)

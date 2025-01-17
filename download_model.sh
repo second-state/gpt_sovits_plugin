@@ -67,7 +67,5 @@ cat > config.json << EOF
 }
 EOF
 
-echo "export GPT_SOVITS_CONFIG_PATH=$(pwd)/config.json"
-echo "export GPT_SOVITS_DICT_PATH=$(pwd)"
 echo "# run tts-api-server"
 echo "wasmedge --dir .:. tts-api-server.wasm --model-name gpt_sovits --model gpt_sovits --config NA --espeak-ng-dir NA"
