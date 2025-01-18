@@ -21,11 +21,9 @@ unzip resource.zip
 
 echo "Download GPT_Sovits g2pw model"
 wget https://huggingface.co/L-jasmine/GPT_Sovits/resolve/main/g2pw.pt
-mv g2pw.pt resource
 
 echo "Download GPT_Sovits mini-bart-g2p model"
 wget https://huggingface.co/L-jasmine/GPT_Sovits/resolve/main/mini-bart-g2p.pt
-mv mini-bart-g2p.pt resource
 
 echo "Download GPT_Sovits voice model"
 wget https://huggingface.co/L-jasmine/GPT_Sovits/resolve/main/cooper.zip
@@ -43,10 +41,10 @@ echo "If plugin is not installed, please install it manually. Goto https://githu
 echo "Generate GPT_Sovits config.json"
 cat > config.json << EOF
 {
-    "bert_model_path": "resource/bert_model.pt",
-    "g2pw_model_path": "resource/g2pw_model.pt",
-    "ssl_model_path": "resource/ssl_model.pt",
-    "mini_bart_g2p_path": "resource/mini-bart-g2p.pt",
+    "bert_model_path": "bert_model.pt",
+    "g2pw_model_path": "g2pw_model.pt",
+    "ssl_model_path": "ssl_model.pt",
+    "mini_bart_g2p_path": "mini-bart-g2p.pt",
     "speaker": [
         {
             "name": "cooper",
