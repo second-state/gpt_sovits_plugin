@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "All required tools are installed"
-wget -v
+wget --version
 if [ $? -ne 0 ]; then
     echo "wget is not installed"
     exit 1
