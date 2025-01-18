@@ -43,7 +43,7 @@ echo "Generate GPT_Sovits config.json"
 cat > config.json << EOF
 {
     "bert_model_path": "bert_model.pt",
-    "g2pw_model_path": "g2pw_model.pt",
+    "g2pw_model_path": "g2pw.pt",
     "ssl_model_path": "ssl_model.pt",
     "mini_bart_g2p_path": "mini-bart-g2p.pt",
     "speaker": [
