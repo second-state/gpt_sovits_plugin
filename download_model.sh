@@ -18,6 +18,7 @@ echo "Download model files"
 echo "Download GPT_Sovits common model files"
 wget https://huggingface.co/L-jasmine/GPT_Sovits/resolve/main/resource.zip
 unzip resource.zip
+rm resource.zip
 
 echo "Download GPT_Sovits g2pw model"
 wget https://huggingface.co/L-jasmine/GPT_Sovits/resolve/main/g2pw.pt
@@ -28,13 +29,13 @@ wget https://huggingface.co/L-jasmine/GPT_Sovits/resolve/main/mini-bart-g2p.pt
 echo "Download GPT_Sovits voice model"
 wget https://huggingface.co/L-jasmine/GPT_Sovits/resolve/main/cooper.zip
 unzip cooper.zip
+rm cooper.zip
 wget https://huggingface.co/L-jasmine/GPT_Sovits/resolve/main/kelly.zip
 unzip kelly.zip
+rm kelly.zip
 
-if [ -f "tts-api-server.wasm" ]; then
-    echo "Download tts-api-server.wasm"
-    wget https://github.com/LlamaEdge/tts-api-server/releases/download/0.2.0/tts-api-server_gpt-sovits.wasm -O tts-api-server.wasm
-fi
+echo "Download tts-api-server.wasm"
+wget https://github.com/LlamaEdge/tts-api-server/releases/download/0.2.0/tts-api-server_gpt-sovits.wasm -O tts-api-server.wasm
 
 echo "If plugin is not installed, please install it manually. Goto https://github.com/second-state/gpt_sovits_plugin"
 
