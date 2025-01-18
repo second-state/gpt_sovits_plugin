@@ -1,12 +1,6 @@
 #!/bin/bash
 
-echo "All required tools are installed"
-wget --version
-if [ $? -ne 0 ]; then
-    echo "wget is not installed"
-    exit 1
-fi
-
+echo "Make sure that all required tools are installed"
 unzip -v
 if [ $? -ne 0 ]; then
     echo "unzip is not installed"
@@ -16,28 +10,26 @@ fi
 echo "Download model files"
 
 echo "Download GPT_Sovits common model files"
-wget https://huggingface.co/L-jasmine/GPT_Sovits/resolve/main/resource.zip
+curl -LO https://huggingface.co/L-jasmine/GPT_Sovits/resolve/main/resource.zip
 unzip resource.zip
 rm resource.zip
 
-echo "Download GPT_Sovits g2pw model"
-wget https://huggingface.co/L-jasmine/GPT_Sovits/resolve/main/g2pw.pt
+echo "Download the GPT_Sovits g2pw model"
+curl -LO https://huggingface.co/L-jasmine/GPT_Sovits/resolve/main/g2pw.pt
 
-echo "Download GPT_Sovits mini-bart-g2p model"
-wget https://huggingface.co/L-jasmine/GPT_Sovits/resolve/main/mini-bart-g2p.pt
+echo "Download the GPT_Sovits mini-bart-g2p model"
+curl -LO https://huggingface.co/L-jasmine/GPT_Sovits/resolve/main/mini-bart-g2p.pt
 
-echo "Download GPT_Sovits voice model"
-wget https://huggingface.co/L-jasmine/GPT_Sovits/resolve/main/cooper.zip
+echo "Download the GPT_Sovits voice actors model"
+curl -LO https://huggingface.co/L-jasmine/GPT_Sovits/resolve/main/cooper.zip
 unzip cooper.zip
 rm cooper.zip
-wget https://huggingface.co/L-jasmine/GPT_Sovits/resolve/main/kelly.zip
+curl -LO https://huggingface.co/L-jasmine/GPT_Sovits/resolve/main/kelly.zip
 unzip kelly.zip
 rm kelly.zip
 
 echo "Download tts-api-server.wasm"
-wget https://github.com/LlamaEdge/tts-api-server/releases/download/0.2.0/tts-api-server_gpt-sovits.wasm -O tts-api-server.wasm
-
-echo "If plugin is not installed, please install it manually. Goto https://github.com/second-state/gpt_sovits_plugin"
+curl -LO https://github.com/LlamaEdge/tts-api-server/releases/download/0.2.0/tts-api-server_gpt-sovits.wasm
 
 echo "Generate GPT_Sovits config.json"
 cat > config.json << EOF
@@ -63,5 +55,6 @@ cat > config.json << EOF
 }
 EOF
 
+echo "If the WasmEdge GPT-SoVITS plugin is not installed, please install it manually. Goto https://github.com/second-state/gpt_sovits_plugin"
 echo "# run tts-api-server"
-echo "wasmedge --dir .:. tts-api-server.wasm --model-name gpt_sovits --model gpt_sovits --config NA --espeak-ng-dir NA"
+echo "wasmedge --dir .:. tts-api-server_gpt-sovits.wasm --model-name gpt_sovits --model gpt_sovits --config NA --espeak-ng-dir NA"
