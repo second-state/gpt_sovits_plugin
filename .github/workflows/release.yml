@@ -6,6 +6,10 @@ on:
       release_name:
         description: "release page name"
         required: true
+      cargo_update:
+        description: "update cargo"
+        required: false
+        default: "false"
   push:
     tags:
       - "[0-9]+.[0-9]+.[0-9]+*"
@@ -45,6 +49,11 @@ jobs:
     - name: Grant the safe directory for git
       run: |
         git config --global --add safe.directory $(pwd)
+
+    - name: Cargo update
+      if: ${{ github.event.inputs.cargo_update == 'true' }}
+      run: |
+        cargo update
 
     - name: Build
       run: |
@@ -102,6 +111,11 @@ jobs:
       run: |
         git config --global --add safe.directory $(pwd)
 
+    - name: Cargo update
+      if: ${{ github.event.inputs.cargo_update == 'true' }}
+      run: |
+        cargo update
+
     - name: Build
       run: |
         export LIBTORCH=$(pwd)/libtorch
@@ -142,6 +156,11 @@ jobs:
       run: |
         wget https://download.pytorch.org/libtorch/cpu/libtorch-macos-arm64-2.4.0.zip
         unzip libtorch-macos-arm64-2.4.0.zip
+
+    - name: Cargo update
+      if: ${{ github.event.inputs.cargo_update == 'true' }}
+      run: |
+        cargo update
 
     - name: Build
       run: |
