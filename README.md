@@ -6,7 +6,7 @@ Regular Linux CPU
 
 ```
 # download libtorch
-wget https://download.pytorch.org/libtorch/cu124/libtorch-cxx11-abi-shared-with-deps-2.4.0%2Bcu124.zip
+curl -LO https://download.pytorch.org/libtorch/cu124/libtorch-cxx11-abi-shared-with-deps-2.4.0%2Bcu124.zip
 
 unzip libtorch-cxx11-abi-shared-with-deps-2.4.0+cu124.zip
 
@@ -19,7 +19,7 @@ Or, on the Mac
 
 ```
 # download libtorch
-wget https://download.pytorch.org/libtorch/cpu/libtorch-macos-arm64-2.4.0.zip
+curl -LO https://download.pytorch.org/libtorch/cpu/libtorch-macos-arm64-2.4.0.zip
 
 unzip libtorch-macos-arm64-2.4.0.zip
 
@@ -74,13 +74,13 @@ cargo build —release
 Use the script
 
 ```
-curl -sSf https://raw.githubusercontent.com/second-state/gpt_sovits_plugin/main/download_model.sh   | bash -s
+curl -sSf https://raw.githubusercontent.com/second-state/gpt_sovits_plugin/main/download_model.sh | bash -s
 ```
 
 ## Start the tts api server
 
 ```
-wasmedge --dir .:. tts-api-server.wasm \
+wasmedge --dir .:. tts-api-server_gpt-sovits.wasm \
   --model-name gpt_sovits \
   --model gpt_sovits \
   --config NA \
