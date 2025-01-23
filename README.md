@@ -53,10 +53,10 @@ Copy the plugin to the library path
 
 ```
 # Copy the dylib for the Mac
-cp target/release/libgpt_sovits_plugin.dylib ~/.wasmedge/plugin
+cp libgpt_sovits_plugin.dylib ~/.wasmedge/plugin
 
 # Or, copy so file into the plugin directory
-cp target/release/libgpt_sovits_plugin.so ~/.wasmedge/plugin
+cp libgpt_sovits_plugin.so ~/.wasmedge/plugin
 ```
 
 Optional: You can build the plugin for your own platform.
