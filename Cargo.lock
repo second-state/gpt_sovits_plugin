@@ -700,7 +700,7 @@ checksum = "a8d1add55171497b4705a648c6b583acafb01d58050a51727785f0b2c8e0a2b2"
 
 [[package]]
 name = "gpt_sovits_plugin"
-version = "0.0.3"
+version = "0.1.0"
 dependencies = [
  "anyhow",
  "env_logger",
@@ -714,9 +714,9 @@ dependencies = [
 
 [[package]]
 name = "gpt_sovits_rs"
-version = "0.3.3"
+version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ee968d508023b268a2439972984af62b65a4f4f64ee2bbb0db8152a36c65d1df"
+checksum = "679f8c0c84a7081f5eae3acd1bdb275ba6d4b7d05541be3733524ec90a6a6da3"
 dependencies = [
  "anyhow",
  "env_logger",

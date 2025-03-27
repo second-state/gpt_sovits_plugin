@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 #[derive(Debug, serde::Deserialize)]
 pub struct Config {
     #[serde(default)]
@@ -12,16 +14,32 @@ pub struct Config {
     pub speaker: Vec<SpeakerConfig>,
 }
 
+#[derive(Debug, Clone, Copy, serde::Deserialize)]
+pub enum Version {
+    V2,
+    V2_1,
+    V3,
+}
+
+impl Default for Version {
+    fn default() -> Self {
+        Version::V2
+    }
+}
+
 #[derive(Debug, serde::Deserialize)]
 pub struct SpeakerConfig {
     pub name: String,
     pub gpt_sovits_path: String,
     pub ref_audio_path: String,
     pub ref_text: String,
+    #[serde(default)]
+    pub version: Version,
 }
 
 pub struct GPTSovitsRuntime {
     gpt_sovits: gpt_sovits_rs::GPTSovits,
+    pub speakers: HashMap<String, Version>,
     pub output_wav: Vec<u8>,
 }
 
@@ -53,20 +71,42 @@ impl GPTSovitsRuntime {
         }
 
         let mut gpt_sovits = gpt_sovits_config.build(device)?;
+        let mut speakers = HashMap::with_capacity(config.speaker.len());
 
         for speaker in &config.speaker {
             let (load_ref_audio, ref_audio_sr) = load_ref_audio(&speaker.ref_audio_path)?;
-            gpt_sovits.create_speaker(
-                &speaker.name,
-                &speaker.gpt_sovits_path,
-                &load_ref_audio,
-                ref_audio_sr as usize,
-                &speaker.ref_text,
-            )?;
+            match speaker.version {
+                Version::V2 => gpt_sovits.create_speaker(
+                    &speaker.name,
+                    &speaker.gpt_sovits_path,
+                    &load_ref_audio,
+                    ref_audio_sr as usize,
+                    &speaker.ref_text,
+                )?,
+                Version::V2_1 => gpt_sovits.create_speaker_v2_1(
+                    &speaker.name,
+                    &speaker.gpt_sovits_path,
+                    &load_ref_audio,
+                    ref_audio_sr as usize,
+                    &speaker.ref_text,
+                    None,
+                )?,
+                Version::V3 => gpt_sovits.create_speaker_v3(
+                    &speaker.name,
+                    &speaker.gpt_sovits_path,
+                    &load_ref_audio,
+                    ref_audio_sr as usize,
+                    &speaker.ref_text,
+                    None,
+                    None,
+                )?,
+            }
+            speakers.insert(speaker.name.to_string(), speaker.version);
         }
 
         Ok(Self {
             gpt_sovits,
+            speakers,
             output_wav: Vec::new(),
         })
     }
@@ -77,7 +117,10 @@ impl GPTSovitsRuntime {
         let audio_size = audio.size1()? as usize;
         let mut samples = vec![0f32; audio_size];
         audio.f_copy_data(&mut samples, audio_size)?;
-        let header = wav_io::new_header(32000, 16, false, true);
+        let header = match self.speakers.get(speaker) {
+            Some(Version::V2) | Some(Version::V2_1) => wav_io::new_header(32000, 16, false, true),
+            _ => wav_io::new_header(24000, 16, false, true),
+        };
         let out_put = wav_io::write_to_bytes(&header, &samples)
             .map_err(|e| anyhow::anyhow!("write wav error: {e}"))?;
 
