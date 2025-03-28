@@ -26,6 +26,11 @@ jobs:
     - name: Install Rust-stable
       uses: dtolnay/rust-toolchain@stable
     
+    - name: Install ssl
+      run: |
+        apt update
+        apt install openssl libssl-dev -y
+    
     - name: Install WasmEdge
       run: |
         curl -sSf https://raw.githubusercontent.com/WasmEdge/WasmEdge/master/utils/install_v2.sh | bash -s -- --version=0.14.1
@@ -86,6 +91,11 @@ jobs:
 
     - name: Install Rust-stable
       uses: dtolnay/rust-toolchain@stable
+
+    - name: Install ssl
+      run: |
+        apt update
+        apt install openssl libssl-dev -y
     
     - name: Install WasmEdge
       run: |
