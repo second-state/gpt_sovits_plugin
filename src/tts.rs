@@ -11,6 +11,9 @@ pub struct Config {
     pub ssl_model_path: String,
     pub mini_bart_g2p_path: String,
 
+    #[serde(default)]
+    pub device: RuntimeDevice,
+
     pub speaker: Vec<SpeakerConfig>,
 }
 
@@ -24,6 +27,20 @@ pub enum Version {
 impl Default for Version {
     fn default() -> Self {
         Version::V2
+    }
+}
+
+#[derive(Debug, Clone, Copy, serde::Deserialize)]
+pub enum RuntimeDevice {
+    None,
+    Cpu,
+    Cuda,
+    Mps,
+}
+
+impl Default for RuntimeDevice {
+    fn default() -> Self {
+        RuntimeDevice::None
     }
 }
 
@@ -53,8 +70,12 @@ impl GPTSovitsRuntime {
     }
 
     pub fn new(config: &Config) -> anyhow::Result<Self> {
-        let device = gpt_sovits_rs::Device::cuda_if_available();
-
+        let device = match config.device {
+            RuntimeDevice::None => gpt_sovits_rs::Device::cuda_if_available(),
+            RuntimeDevice::Cpu => gpt_sovits_rs::Device::Cpu,
+            RuntimeDevice::Cuda => gpt_sovits_rs::Device::Cuda(0),
+            RuntimeDevice::Mps => gpt_sovits_rs::Device::Mps,
+        };
         let mut gpt_sovits_config = gpt_sovits_rs::GPTSovitsConfig::new(
             config.ssl_model_path.clone(),
             config.mini_bart_g2p_path.clone(),
