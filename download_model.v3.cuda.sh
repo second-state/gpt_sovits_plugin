@@ -21,7 +21,7 @@ echo "Download the GPT_Sovits mini-bart-g2p model"
 curl -LO https://huggingface.co/L-jasmine/GPT_Sovits/resolve/main/mini-bart-g2p.pt
 
 echo "Download the GPT_Sovits V3"
-curl -LO https://huggingface.co/L-jasmine/GPT_Sovits/resolve/main/gpt_sovits_v3.mps.pt
+curl -LO https://huggingface.co/L-jasmine/GPT_Sovits/resolve/main/gpt_sovits_v3.cuda.pt
 
 echo "Download the GPT_Sovits voice actors model"
 curl -LO https://huggingface.co/L-jasmine/GPT_Sovits/resolve/main/cooper.zip
@@ -45,14 +45,14 @@ cat > config.json << EOF
     "speaker": [
         {
             "name": "cooper",
-            "gpt_sovits_path": "gpt_sovits_v3.mps.pt",
+            "gpt_sovits_path": "gpt_sovits_v3.cuda.pt",
             "version":"V3",
             "ref_audio_path": "cooper/ref.wav",
             "ref_text": "The birds are singing again. The sky is clearing."
         },
         {
             "name": "kelly",
-            "gpt_sovits_path": "gpt_sovits_v3.mps.pt",
+            "gpt_sovits_path": "gpt_sovits_v3.cuda.pt",
             "version":"V3",
             "ref_audio_path": "kelly/ref.wav",
             "ref_text": "The whole case boils down to the same alleged scheme."
