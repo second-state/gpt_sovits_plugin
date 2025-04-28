@@ -153,5 +153,17 @@ pub fn load_ref_audio(ref_audio_path: &str) -> anyhow::Result<(Vec<f32>, u32)> {
     let ref_audio_file = std::fs::File::open(ref_audio_path)?;
     let (head, samples) =
         wav_io::read_from_file(ref_audio_file).map_err(|e| anyhow::anyhow!("{e}"))?;
+    let samples = if head.channels != 1 {
+        // to mono
+        let mut samples_ = Vec::with_capacity(samples.len() / head.channels as usize);
+        for (i, sample) in samples.iter().enumerate() {
+            if i % head.channels as usize == 0 {
+                samples_.push(*sample);
+            }
+        }
+        samples_
+    } else {
+        samples
+    };
     Ok((samples, head.sample_rate))
 }
