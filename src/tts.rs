@@ -133,15 +133,15 @@ impl GPTSovitsRuntime {
     }
 
     pub fn infer(&self, speaker: &str, text: &str) -> anyhow::Result<Vec<u8>> {
-        let audio = self.gpt_sovits.segment_infer(speaker, text, 50)?;
+        let mut audio = self.gpt_sovits.segment_infer(speaker, text, 50)?;
+        if matches!(self.speakers.get(speaker), Some(Version::V3)) {
+            audio = self.gpt_sovits.resample(&audio, 24000, 32000)?
+        }
 
         let audio_size = audio.size1()? as usize;
         let mut samples = vec![0f32; audio_size];
         audio.f_copy_data(&mut samples, audio_size)?;
-        let header = match self.speakers.get(speaker) {
-            Some(Version::V2) | Some(Version::V2_1) => wav_io::new_header(32000, 16, false, true),
-            _ => wav_io::new_header(24000, 16, false, true),
-        };
+        let header = wav_io::new_header(32000, 16, false, true);
         let out_put = wav_io::write_to_bytes(&header, &samples)
             .map_err(|e| anyhow::anyhow!("write wav error: {e}"))?;
 
