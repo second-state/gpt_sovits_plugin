@@ -23,6 +23,7 @@ pub enum Version {
     V2_1,
     V3,
     V4,
+    V2Pro,
 }
 
 impl Default for Version {
@@ -113,6 +114,14 @@ impl GPTSovitsRuntime {
                     &speaker.ref_text,
                     None,
                 )?,
+                Version::V2Pro => gpt_sovits.create_speaker_v2_pro(
+                    &speaker.name,
+                    &speaker.gpt_sovits_path,
+                    &load_ref_audio,
+                    ref_audio_sr as usize,
+                    &speaker.ref_text,
+                    None,
+                )?,
                 Version::V3 => gpt_sovits.create_speaker_v3(
                     &speaker.name,
                     &speaker.gpt_sovits_path,
@@ -143,7 +152,15 @@ impl GPTSovitsRuntime {
     }
 
     pub fn infer(&self, speaker: &str, text: &str) -> anyhow::Result<Vec<u8>> {
-        let mut audio = self.gpt_sovits.segment_infer(speaker, text, 150)?;
+        let split_chunk_size = if text.chars().all(|c| c.is_ascii()) {
+            100 // ASCII text
+        } else {
+            50 // Non-ASCII text
+        };
+
+        let mut audio = self
+            .gpt_sovits
+            .segment_infer(speaker, text, split_chunk_size)?;
         match self.speakers.get(speaker) {
             Some(Version::V3) => {
                 audio = self.gpt_sovits.resample(&audio, 24000, 32000)?;
